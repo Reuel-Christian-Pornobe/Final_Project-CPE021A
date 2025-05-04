@@ -78,6 +78,15 @@ delay:
 	and al, 0FCh
 	out 61h, al
 
+	; show a white color	
+	mov ah,06h
+	mov ch, 0 		; Top row
+	mov cl, 0 		; Left column
+	mov dh, 24 		; Bottom row
+	mov dl, 80 		; Right column
+	mov bh, 000h		; black color
+	int 10h
+
 	jmp piano
 
 
@@ -100,11 +109,11 @@ delayIncorrect:
 
 correctSound:
 	; the following plays a beep sound...
-	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
+	mov al, 0B6h		; this makes a square wave, there are more types but this will be used...
 	out 43h, al   		; sending it be used in the configured port, in/
 				; out will be use to configure these since they
 				; are hardware ports.
-	mov ax, 0A98h   	; this will be the frequency used, modify this
+	mov ax, 1140h   	; this will be the frequency used, modify this
 				; to change the sounds.
 	out 42h, al
 	mov al, ah
@@ -117,16 +126,9 @@ correctSound:
 	; looping the beep sounds, change al to configure the amount of time
 	; for the beep to occur since using C register or procedure call keeps
 	; looping infinitely...
-	mov al, 30
+	mov al, 2
 
-	
-	mov dx, offset message2
-	mov ah, 09                      ; output string
-	int 21h
 
-	mov dx, offset message3
-	mov ah, 09                      ; output string
-	int 21h
 
 	jmp delay
 
@@ -136,7 +138,7 @@ incorrectSound:
 	out 43h, al   		; sending it be used in the configured port, in/
 				; out will be use to configure these since they
 				; are hardware ports.
-	mov ax, 0A98h   	; this will be the frequency used, modify this
+	mov ax, 6449h   	; this will be the frequency used, modify this
 				; to change the sounds.
 	out 42h, al
 	mov al, ah
@@ -150,14 +152,13 @@ incorrectSound:
 	jmp delayIncorrect
 
 
-
-sol:
-	; play sound of sol
+do:
+	; play sound of do.
 	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
 	out 43h, al   		; sending it be used in the configured port, in/
 				; out will be use to configure these since they
 				; are hardware ports.
-	mov ax, 3043		; this will be the frequency used, modify this
+	mov ax, 4560		; this will be the frequency used, modify this
 				; to change the sounds.
 	out 42h, al
 	mov al, ah
@@ -167,16 +168,27 @@ sol:
 	or al, 3      		; to configure and if so, it will turn it to that
 	out 61h, al   		; as can be seen here where port 61h is used.
 
+	
+	; color	
+	mov ah,06h
+	mov ch, 0 		; Top row
+	mov dh, 24 		; Bottom row
+	mov cl, 0 		; Left column
+	mov dl, 11 		; Right column
+	mov bh, 020h		; green color
+	int 10h
+	
+
 	mov al, 5
 	jmp delay
 
-la:
-	; play sound of la
+re:
+	; play sound of re
 	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
 	out 43h, al   		; sending it be used in the configured port, in/
 				; out will be use to configure these since they
 				; are hardware ports.
-	mov ax, 2711		; this will be the frequency used, modify this
+	mov ax, 4063    	; this will be the frequency used, modify this
 				; to change the sounds.
 	out 42h, al
 	mov al, ah
@@ -186,16 +198,25 @@ la:
 	or al, 3      		; to configure and if so, it will turn it to that
 	out 61h, al   		; as can be seen here where port 61h is used.
 
+	; color	
+	mov ah,06h
+	mov ch, 0 		; Top row
+	mov dh, 24 		; Bottom row
+	mov cl, 11 		; Left column
+	mov dl, 22 		; Right column
+	mov bh, 020h		; green color
+	int 10h
+
 	mov al, 5
 	jmp delay
 
-ti:
-	; play sound of ti
+mi:
+	; play sound of mi
 	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
 	out 43h, al   		; sending it be used in the configured port, in/
 				; out will be use to configure these since they
 				; are hardware ports.
-	mov ax, 2415		; this will be the frequency used, modify this
+	mov ax, 3619    	; this will be the frequency used, modify this
 				; to change the sounds.
 	out 42h, al
 	mov al, ah
@@ -205,10 +226,50 @@ ti:
 	or al, 3      		; to configure and if so, it will turn it to that
 	out 61h, al   		; as can be seen here where port 61h is used.
 
+	; color	
+	mov ah,06h
+	mov ch, 0 		; Top row
+	mov dh, 24 		; Bottom row
+	mov cl, 22 		; Left column
+	mov dl, 33 		; Right column
+	mov bh, 020h		; green color
+	int 10h
+
+
 	mov al, 5
 	jmp delay
+do2:             ; just an extension
+	jmp do
+re2:             ; just an extension
+	jmp re
 
+fa:
+	; play sound of fa
+	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
+	out 43h, al   		; sending it be used in the configured port, in/
+				; out will be use to configure these since they
+				; are hardware ports.
+	mov ax, 3416    	; this will be the frequency used, modify this
+				; to change the sounds.
+	out 42h, al
+	mov al, ah
+	out 42h, al
 
+	in al, 61h    		; these two reads the current state of the speaker
+	or al, 3      		; to configure and if so, it will turn it to that
+	out 61h, al   		; as can be seen here where port 61h is used.
+
+	; color	
+	mov ah,06h
+	mov ch, 0 		; Top row
+	mov dh, 24 		; Bottom row
+	mov cl, 33 		; Left column
+	mov dl, 44 		; Right column
+	mov bh, 020h		; green color
+	int 10h
+
+	mov al, 5
+	jmp delay
 
 piano:
 	; sing the note C
@@ -217,12 +278,12 @@ piano:
 	
 	mov bx, offset noteC	      	; bx points to noteC
 	cmp al, [bx]                    
-	je do	
+	je do2	
 
 	; sing the note D
 	mov bx, offset noteD	      	; bx points to noteD
 	cmp al, [bx]                    
-	je re
+	je re2
 
 	; sing the note E
 	mov bx, offset noteE	      	; bx points to noteE
@@ -262,13 +323,14 @@ turnOff:
 	main endp
 
 
-do:
-	; play sound of do.
+
+sol:
+	; play sound of sol
 	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
 	out 43h, al   		; sending it be used in the configured port, in/
 				; out will be use to configure these since they
 				; are hardware ports.
-	mov ax, 4560		; this will be the frequency used, modify this
+	mov ax, 3043		; this will be the frequency used, modify this
 				; to change the sounds.
 	out 42h, al
 	mov al, ah
@@ -278,16 +340,25 @@ do:
 	or al, 3      		; to configure and if so, it will turn it to that
 	out 61h, al   		; as can be seen here where port 61h is used.
 
+	; color	
+	mov ah,06h
+	mov ch, 0 		; Top row
+	mov dh, 24 		; Bottom row
+	mov cl, 44 		; Left column
+	mov dl, 55 		; Right column
+	mov bh, 020h		; green color
+	int 10h
+
 	mov al, 5
 	jmp delay
 
-re:
-	; play sound of re
+la:
+	; play sound of la
 	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
 	out 43h, al   		; sending it be used in the configured port, in/
 				; out will be use to configure these since they
 				; are hardware ports.
-	mov ax, 4063    	; this will be the frequency used, modify this
+	mov ax, 2711		; this will be the frequency used, modify this
 				; to change the sounds.
 	out 42h, al
 	mov al, ah
@@ -297,16 +368,25 @@ re:
 	or al, 3      		; to configure and if so, it will turn it to that
 	out 61h, al   		; as can be seen here where port 61h is used.
 
+	; color	
+	mov ah,06h
+	mov ch, 0 		; Top row
+	mov dh, 24 		; Bottom row
+	mov cl, 55 		; Left column
+	mov dl, 66 		; Right column
+	mov bh, 020h		; green color
+	int 10h
+
 	mov al, 5
 	jmp delay
 
-mi:
-	; play sound of mi
+ti:
+	; play sound of ti
 	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
 	out 43h, al   		; sending it be used in the configured port, in/
 				; out will be use to configure these since they
 				; are hardware ports.
-	mov ax, 3619    	; this will be the frequency used, modify this
+	mov ax, 2415		; this will be the frequency used, modify this
 				; to change the sounds.
 	out 42h, al
 	mov al, ah
@@ -316,29 +396,16 @@ mi:
 	or al, 3      		; to configure and if so, it will turn it to that
 	out 61h, al   		; as can be seen here where port 61h is used.
 
-	mov al, 5
-	jmp delay
-
-fa:
-	; play sound of fa
-	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
-	out 43h, al   		; sending it be used in the configured port, in/
-				; out will be use to configure these since they
-				; are hardware ports.
-	mov ax, 3416    	; this will be the frequency used, modify this
-				; to change the sounds.
-	out 42h, al
-	mov al, ah
-	out 42h, al
-
-	in al, 61h    		; these two reads the current state of the speaker
-	or al, 3      		; to configure and if so, it will turn it to that
-	out 61h, al   		; as can be seen here where port 61h is used.
+	; color	
+	mov ah,06h
+	mov ch, 0 		; Top row
+	mov dh, 24 		; Bottom row
+	mov cl, 66 		; Left column
+	mov dl, 80 		; Right column
+	mov bh, 020h		; green color
+	int 10h
 
 	mov al, 5
 	jmp delay
-
-
-
 
 end main
