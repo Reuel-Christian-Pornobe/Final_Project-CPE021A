@@ -1,12 +1,9 @@
-; 'TODO  - loop back to the start if wrong password     (checked)
-;        - add a sound 																	(checked)
-;	 - add designs using int 10h
- 	
-
 .model medium
 .stack 100h
 
 .data
+	tutorial1  db 10,13, 'Welcome to Piano!$'
+	tutorial2  db 10,13, 'Press qwertyu to play, other to Exit!$'
 	message    db 10,13, 'Enter password please: $'
 	passwd     db 'igopkyle'	                        ; correct password
 	count      dw 8						; amount of character it will read
@@ -28,6 +25,14 @@
 main proc
 	mov ax, @data
 	mov ds, ax
+
+	mov dx, offset tutorial1  
+	mov ah, 09                      ; output string
+	int 21h
+
+	mov dx, offset tutorial2  
+	mov ah, 09                      ; output string
+	int 21h
 
 start:
 	mov cx, count		      	; cx = 6
@@ -127,8 +132,6 @@ correctSound:
 	; for the beep to occur since using C register or procedure call keeps
 	; looping infinitely...
 	mov al, 2
-
-
 
 	jmp delay
 
