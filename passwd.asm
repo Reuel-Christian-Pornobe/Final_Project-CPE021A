@@ -3,7 +3,7 @@
 ;	 - add designs using int 10h
  	
 
-.model small
+.model medium
 .stack 100h
 
 .data
@@ -12,6 +12,17 @@
 	count      dw 8						; amount of character it will read
 	correct    db 'Password verified and Correct$'
 	notcorrect db 'Invalid Password$'
+
+	noteC 	   db 'q'					; note c
+	noteD	   db 'w'    					; note d
+	noteE 	   db 'e'					; note e
+	noteF	   db 'r'    					; note f
+	noteG 	   db 't'					; note g
+	noteA	   db 'y'    					; note a
+	noteB 	   db 'u'					; note b
+	
+	message2   db 10,13, 'WELCOME TO PIANO!$'
+	message3   db 10,13, 'Q W E R T Y U$'
 
 .code
 main proc
@@ -23,7 +34,7 @@ start:
 	mov bx, offset passwd	      	; bx points to passwd
 
 	mov dx, offset message
-	mov ah, 09
+	mov ah, 09                      ; output string
 	int 21h
 
 
@@ -66,7 +77,8 @@ delay:
 	in al, 61h
 	and al, 0FCh
 	out 61h, al
-	jmp turnOff
+
+	jmp piano
 
 
 beeploop2:
@@ -84,7 +96,6 @@ delayIncorrect:
 	out 61h, al
 	jmp start
 	
-
 
 
 correctSound:
@@ -107,9 +118,17 @@ correctSound:
 	; for the beep to occur since using C register or procedure call keeps
 	; looping infinitely...
 	mov al, 30
+
+	
+	mov dx, offset message2
+	mov ah, 09                      ; output string
+	int 21h
+
+	mov dx, offset message3
+	mov ah, 09                      ; output string
+	int 21h
+
 	jmp delay
-
-
 
 incorrectSound:
 	; the following plays a beep sound...
@@ -127,15 +146,199 @@ incorrectSound:
 	or al, 3      		; to configure and if so, it will turn it to that
 	out 61h, al   		; as can be seen here where port 61h is used.
 
-	; looping the beep sounds, change al to configure the amount of time
-	; for the beep to occur since using C register or procedure call keeps
-	; looping infinitely...
 	mov al, 5
 	jmp delayIncorrect
+
+
+
+sol:
+	; play sound of sol
+	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
+	out 43h, al   		; sending it be used in the configured port, in/
+				; out will be use to configure these since they
+				; are hardware ports.
+	mov ax, 3043		; this will be the frequency used, modify this
+				; to change the sounds.
+	out 42h, al
+	mov al, ah
+	out 42h, al
+
+	in al, 61h    		; these two reads the current state of the speaker
+	or al, 3      		; to configure and if so, it will turn it to that
+	out 61h, al   		; as can be seen here where port 61h is used.
+
+	mov al, 5
+	jmp delay
+
+la:
+	; play sound of la
+	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
+	out 43h, al   		; sending it be used in the configured port, in/
+				; out will be use to configure these since they
+				; are hardware ports.
+	mov ax, 2711		; this will be the frequency used, modify this
+				; to change the sounds.
+	out 42h, al
+	mov al, ah
+	out 42h, al
+
+	in al, 61h    		; these two reads the current state of the speaker
+	or al, 3      		; to configure and if so, it will turn it to that
+	out 61h, al   		; as can be seen here where port 61h is used.
+
+	mov al, 5
+	jmp delay
+
+ti:
+	; play sound of ti
+	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
+	out 43h, al   		; sending it be used in the configured port, in/
+				; out will be use to configure these since they
+				; are hardware ports.
+	mov ax, 2415		; this will be the frequency used, modify this
+				; to change the sounds.
+	out 42h, al
+	mov al, ah
+	out 42h, al
+
+	in al, 61h    		; these two reads the current state of the speaker
+	or al, 3      		; to configure and if so, it will turn it to that
+	out 61h, al   		; as can be seen here where port 61h is used.
+
+	mov al, 5
+	jmp delay
+
+
+
+piano:
+	; sing the note C
+	mov ah,08			; service number
+	int 21h				; reads a char in al without echo
+	
+	mov bx, offset noteC	      	; bx points to noteC
+	cmp al, [bx]                    
+	je do	
+
+	; sing the note D
+	mov bx, offset noteD	      	; bx points to noteD
+	cmp al, [bx]                    
+	je re
+
+	; sing the note E
+	mov bx, offset noteE	      	; bx points to noteE
+	cmp al, [bx]                    
+	je mi
+
+
+	; sing the note F
+	mov bx, offset noteF	      	; bx points to noteF
+	cmp al, [bx]                    
+	je fa
+	
+	; sing the note G
+	mov bx, offset noteG	      	; bx points to noteG
+	cmp al, [bx]                    
+	je sol
+
+	; sing the note A
+	mov bx, offset noteA	      	; bx points to noteA
+	cmp al, [bx]                    
+	je la
+
+
+	; sing the note B
+	mov bx, offset noteB	      	; bx points to noteB
+	cmp al, [bx]                    
+	je ti
+
+
+	; exit                   
+	jne turnOff
 
 
 turnOff:
 	mov ah,4ch
 	int 21h
 	main endp
+
+
+do:
+	; play sound of do.
+	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
+	out 43h, al   		; sending it be used in the configured port, in/
+				; out will be use to configure these since they
+				; are hardware ports.
+	mov ax, 4560		; this will be the frequency used, modify this
+				; to change the sounds.
+	out 42h, al
+	mov al, ah
+	out 42h, al
+
+	in al, 61h    		; these two reads the current state of the speaker
+	or al, 3      		; to configure and if so, it will turn it to that
+	out 61h, al   		; as can be seen here where port 61h is used.
+
+	mov al, 5
+	jmp delay
+
+re:
+	; play sound of re
+	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
+	out 43h, al   		; sending it be used in the configured port, in/
+				; out will be use to configure these since they
+				; are hardware ports.
+	mov ax, 4063    	; this will be the frequency used, modify this
+				; to change the sounds.
+	out 42h, al
+	mov al, ah
+	out 42h, al
+
+	in al, 61h    		; these two reads the current state of the speaker
+	or al, 3      		; to configure and if so, it will turn it to that
+	out 61h, al   		; as can be seen here where port 61h is used.
+
+	mov al, 5
+	jmp delay
+
+mi:
+	; play sound of mi
+	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
+	out 43h, al   		; sending it be used in the configured port, in/
+				; out will be use to configure these since they
+				; are hardware ports.
+	mov ax, 3619    	; this will be the frequency used, modify this
+				; to change the sounds.
+	out 42h, al
+	mov al, ah
+	out 42h, al
+
+	in al, 61h    		; these two reads the current state of the speaker
+	or al, 3      		; to configure and if so, it will turn it to that
+	out 61h, al   		; as can be seen here where port 61h is used.
+
+	mov al, 5
+	jmp delay
+
+fa:
+	; play sound of fa
+	mov al, 0B6h  		; this makes a square wave, there are more types but this will be used...
+	out 43h, al   		; sending it be used in the configured port, in/
+				; out will be use to configure these since they
+				; are hardware ports.
+	mov ax, 3416    	; this will be the frequency used, modify this
+				; to change the sounds.
+	out 42h, al
+	mov al, ah
+	out 42h, al
+
+	in al, 61h    		; these two reads the current state of the speaker
+	or al, 3      		; to configure and if so, it will turn it to that
+	out 61h, al   		; as can be seen here where port 61h is used.
+
+	mov al, 5
+	jmp delay
+
+
+
+
 end main
