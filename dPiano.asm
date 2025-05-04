@@ -2,7 +2,7 @@
 .stack 100h
 
 .data
-	tutorial1  db 10,13, 'Welcome to Piano!$'
+	tutorial1  db 10,13, 'Welcome to DOS Piano!$'
 	tutorial2  db 10,13, 'Press qwertyu to play, other to Exit!$'
 	message    db 10,13, 'Enter password please: $'
 	passwd     db 'igopkyle'	                        ; correct password
